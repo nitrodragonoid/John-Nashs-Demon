@@ -1,4 +1,4 @@
-board =[[0,0,0],[0,0,0],[0,0,0]]
+board = [[0,0,0],[0,0,0],[0,0,0]]
 
 def is_ended(state):
     #check if draw
@@ -12,16 +12,16 @@ def is_ended(state):
     #check if a win condition is met
     #for horizontal win
     for k in range(len(state)): 
-        if (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]):
+        if (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]) and (state[k][0] != 0):
             return True
     #for vertical win        
     for l in range(len(state[0])): 
-        if (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]):
+        if (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]) and (state[0][l] != 0):
             return True
     #for daignol win
-    if (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]):
+    if (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]) and (state[1][1] != 0):
         return True
-    if (state[0][2] == state[1][1]) and (state[1][1] == state[2][1]):
+    if (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]) and (state[1][1] != 0):
         return True
     #if game not ended
     return False
@@ -39,7 +39,7 @@ def utility(state):
     #for daignol win
     if state[0][0] == "O" and (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]):
         return -1
-    if state[0][0] == "O" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][1]):
+    if state[0][0] == "O" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
         return -1
     #For X
     #for horizontal win
@@ -53,7 +53,7 @@ def utility(state):
     #for daignol win
     if state[0][0] == "X" and (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]):
         return 1
-    if state[0][0] == "X" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][1]):
+    if state[0][0] == "X" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
         return 1
     #For draw
     end = True
@@ -100,24 +100,52 @@ def display(state):
     for i in state:
         print(i)
 
-#Will add minimax algorithm here tomorrow        
-        
-def game(initial):
+def game_playing_x(initial):    
+    print("controls:")
+    print("Y-Axis")
+    print("For top: t")
+    print("For middle: m")
+    print("For Bottom: b")    
+    print("X-Axis")
+    print("For Left: l")
+    print("For Center: c")
+    print("For Right: r")
+    print("Give command as tr")
     state = initial
-    while is_ended != True:
+    while is_ended(state) == False:
         display(state)
-        x = input()
-        #if conditions for playing
-        result(state,move)
+        command = input("Enter move: ")
+        if command == "tl":
+            move = [["X",0,0],[0,0,0],[0,0,0]]
+        elif command == "tc":
+            move = [[0,"X",0],[0,0,0],[0,0,0]]
+        elif command == "tr":
+            move = [[0,0,"X"],[0,0,0],[0,0,0]]
+        elif command == "ml":
+            move = [[0,0,0],["X",0,0],[0,0,0]]
+        elif command == "mc":
+            move = [[0,0,0],[0,"X",0],[0,0,0]]
+        elif command == "mr":
+            move = [[0,0,0],[0,0,"X"],[0,0,0]]
+        elif command == "bl":
+            move = [[0,0,0],[0,0,0],["X",0,0]]
+        elif command == "bc":
+            move = [[0,0,0],[0,0,0],[0,"X",0]]
+        elif command == "br":
+            move = [[0,0,0],[0,0,0],[0,0,"X"]]
+        state = result(state,move)
         display(state)
         #call minimax
     if utility(state) == 1:
-        print("X won the game")
+        print("You won the game")
     elif utility(state) == -1:
-        print("O won the game")
-    else:
+        print("YOu lost the game")
+    elif utility(state) == 0:
         print("The game was a draw")
+    else:
+        print("Error")
+        
 
-game(board)
+game_playing_x(board)
 
 
