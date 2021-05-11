@@ -30,30 +30,30 @@ def utility(state):
     #For O
     #for horizontal win
     for k in range(len(state)): 
-        if state[0][0] == "O" and (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]):
+        if state[k][0] == "O" and (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]):
             return -1
     #for vertical win        
     for l in range(len(state[0])): 
-        if state[0][0] == "O" and (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]):
+        if state[0][l] == "O" and (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]):
             return -1
     #for daignol win
     if state[0][0] == "O" and (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]):
         return -1
-    if state[0][0] == "O" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
+    if state[0][2] == "O" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
         return -1
     #For X
     #for horizontal win
     for k in range(len(state)): 
-        if state[0][0] == "X" and (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]):
+        if state[k][0] == "X" and (state[k][0] == state[k][1]) and (state[k][1] == state[k][2]):
             return 1
     #for vertical win        
     for l in range(len(state[0])): 
-        if state[0][0] == "X" and (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]):
+        if state[0][l] == "X" and (state[0][l] == state[1][l]) and (state[1][l] == state[2][l]):
             return 1
     #for daignol win
     if state[0][0] == "X" and (state[0][0] == state[1][1]) and (state[1][1] == state[2][2]):
         return 1
-    if state[0][0] == "X" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
+    if state[0][2] == "X" and (state[0][2] == state[1][1]) and (state[1][1] == state[2][0]):
         return 1
     #For draw
     end = True
@@ -139,13 +139,11 @@ def game_playing_x(initial):
     if utility(state) == 1:
         print("You won the game")
     elif utility(state) == -1:
-        print("YOu lost the game")
+        print("You lost the game")
     elif utility(state) == 0:
         print("The game was a draw")
     else:
         print("Error")
         
-
 game_playing_x(board)
-
 
