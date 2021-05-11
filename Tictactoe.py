@@ -107,7 +107,7 @@ def game(initial):
     while is_ended != True:
         display(state)
         x = input()
-        #if conditions
+        #if conditions for playing
         result(state,move)
         display(state)
         #call minimax
