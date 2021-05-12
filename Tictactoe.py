@@ -100,6 +100,8 @@ def display(state):
     for i in state:
         print(i)
 
+#Will add minimax here tomorrow (today after I sleep)        
+        
 def game_playing_x(initial):    
     print("controls:")
     print("Y-Axis")
