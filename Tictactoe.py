@@ -100,8 +100,50 @@ def display(state):
     for i in state:
         print(i)
 
-#Will add minimax here tomorrow (today after I sleep)        
-        
+def max_value(state):
+    if is_ended(state) == True:
+        return utility(state)
+    v = -9999999
+    for a in action(state,check_turn(state)):
+        if v < min_value(result(state,a)):
+            v = min_value(result(state,a))
+            best = a
+    return v
+
+def min_value(state):
+    if is_ended(state) == True:
+        return utility(state)
+    v = 9999999
+    for a in action(state,check_turn(state)):
+        if v > max_value(result(state,a)):
+            v = max_value(result(state,a))
+            best = a
+    return v
+
+def MAX(state):
+    val = -9999999
+    for a in action(state,check_turn(state)):
+        if max_value(result(state,a)) > val:
+            val = max_value(result(state,a))
+            best = a
+    return best
+
+def MIN(state):
+    val = 9999999
+    for a in action(state,check_turn(state)):
+        if min_value(result(state,a)) < val:
+            val = min_value(result(state,a))
+            best = a
+            print(best)
+    return best
+
+def minimax(state):
+    if check_turn(state) == "O":
+        return MIN(state)
+    elif check_turn(state) == "X":
+        return MAX(state)
+
+
 def game_playing_x(initial):    
     print("controls:")
     print("Y-Axis")
@@ -137,7 +179,8 @@ def game_playing_x(initial):
             move = [[0,0,0],[0,0,0],[0,0,"X"]]
         state = result(state,move)
         display(state)
-        #call minimax
+        state = result(state,minimax(state))
+        display(state)
     if utility(state) == 1:
         print("You won the game")
     elif utility(state) == -1:
