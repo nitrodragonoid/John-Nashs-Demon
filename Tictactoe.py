@@ -75,12 +75,14 @@ def action(state,turn):
                 out.append(move) 
     return out
 
-def result(state,move):
-	temp = state.copy()
+def result(state, move):
+    temp = []
+    for i in state:
+        temp.append(i.copy())
     for i in range(len(move)):
         for j in range(len(move[i])):
             if move[i][j] != 0:
-                temp[i][j] = move[i][j] 
+                temp[i][j] = move[i][j]
     return temp
     
 def check_turn(state):
