@@ -198,6 +198,8 @@ def game_playing_x(initial):
             move = [[0,0,0],[0,0,0],[0,0,"X"]]
         state = result(state,move)
         display(state)
+        if is_ended(state) == True:
+            break	
         state = result(state,minimax(state))
     display(state)
     if utility(state) == 1:
