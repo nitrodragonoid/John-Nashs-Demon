@@ -75,21 +75,6 @@ def action(state,turn): #outputs the list of all the possible moves
                 out.append(move) 
     return out
 
-def result1(state,move):
-    for i in range(len(move)):
-        for j in range(len(move[i])):
-            if move[i][j] != 0:
-                state[i][j] = move[i][j] 
-    return state
-
-def result2(state,move):
-    temp = state.copy()
-    for i in range(len(move)):
-        for j in range(len(move[i])):
-            if move[i][j] != 0:
-                temp[i][j] = move[i][j] 
-    return temp   
-
 def result(state, move):
     temp = []
     for i in state:
