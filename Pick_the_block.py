@@ -181,7 +181,7 @@ def menu():
     x = 75
 
     # making the buttons for picking either 1 or 2 blocks
-    b1 = button(screen, (175, 150), "Pick 1 Block")
+    b1 = button(screen, (185, 150), "Pick 1 Block")
     b2 = button(screen, (175, 300), "Pick 2 Blocks")
 
     # main game loop
