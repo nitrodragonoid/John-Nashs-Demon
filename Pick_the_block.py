@@ -108,7 +108,7 @@ def menu():
 
     # making circular blocks numbered 1-10
 
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+        pygame.draw.circle(screen,(200,200,100),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_1 = font.render("1",True,(150, 100, 100))
     textRect_1 = text_1.get_rect()
@@ -122,7 +122,7 @@ def menu():
     textRect_2.center = (x, y)
     screen.blit(text_2,textRect_2)
     x += 50
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+    pygame.draw.circle(screen,(200,200,100),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_3 = font.render("3",True,(150, 100, 100))
     textRect_3 = text_3.get_rect()
@@ -136,14 +136,14 @@ def menu():
     textRect_4.center = (x, y)
     screen.blit(text_4,textRect_4)
     x += 50
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+    pygame.draw.circle(screen,(170,200,230),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_5 = font.render("5",True,(150, 100, 100))
     textRect_5 = text_5.get_rect()
     textRect_5.center = (x, y)
     screen.blit(text_5,textRect_5)
     x += 50
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+    pygame.draw.circle(screen,(170,200,230),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_6 = font.render("6",True,(150, 100, 100))
     textRect_6 = text_6.get_rect()
@@ -157,7 +157,7 @@ def menu():
     textRect_7.center = (x, y)
     screen.blit(text_7,textRect_7)
     x += 50
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+    pygame.draw.circle(screen,(200,200,100),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_8 = font.render("8",True,(150, 100, 100))
     textRect_8 = text_8.get_rect()
@@ -171,7 +171,7 @@ def menu():
     textRect_9.center = (x, y)
     screen.blit(text_9,textRect_9)
     x += 50
-    pygame.draw.circle(screen,(255,255,0),(x,y),20)
+    pygame.draw.circle(screen,(200,200,100),(x,y),20)
     font = pygame.font.SysFont('timesnewroman', 20)
     text_10 = font.render("10",True,(150, 100, 100))
     textRect_10 = text_10.get_rect()
