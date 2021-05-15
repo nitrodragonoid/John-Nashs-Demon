@@ -108,8 +108,7 @@ def max_value(state):
         return utility(state)
     v = -9999999
     for a in action(state,check_turn(state)):
-        check = state.copy()
-        v = max(v,min_value(result(check,a)))
+        v = max(v,min_value(result(state,a)))
     return v
 
 def min_value(state):
@@ -117,15 +116,14 @@ def min_value(state):
         return utility(state)
     v = 9999999
     for a in action(state,check_turn(state)):
-        check = state.copy()
-        v = min(v,max_value(result(check,a)))
+        v = min(v,max_value(result(state,a)))
     return v
 
 def MAX(state):
     val = -9999999
     for a in action(state,check_turn(state)):
         check = state.copy()
-        y = max_value(result(check,a))
+        y = min_value(result(check,a))
         if y > val:
             val = y
             best = a
@@ -134,8 +132,8 @@ def MAX(state):
 def MIN(state):
     val = 9999999
     for a in action(state,check_turn(state)):
-        check = state.copy()
-        x = min_value(result(check,a))
+        check = state.copy()     
+        x = max_value(result(check,a))
         if x < val:
             val = x
             best = a
