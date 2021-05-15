@@ -198,12 +198,12 @@ def menu():
                 
                 # checks if 1 block has to be picked or 2 according to the move. Makes the bot unravel its algorithm, and make the move accordingly. To be updated with the bot, changes to be made as the bot will not click the mouse so the blocks still have to be removed when the bot makes a move.
                 if b1.collidepoint(pygame.mouse.get_pos()):
-                    pygame.draw.circle(screen,(20, 200, 160),(x,y),20)
+                    pygame.draw.circle(screen,(100, 200, 160),(x,y),20)
                     x += 50
                 elif b2.collidepoint(pygame.mouse.get_pos()):
-                    pygame.draw.circle(screen,(20, 200, 160),(x,y),20)
+                    pygame.draw.circle(screen,(100, 200, 160),(x,y),20)
                     x += 50
-                    pygame.draw.circle(screen,(20, 200, 160),(x,y),20)
+                    pygame.draw.circle(screen,(100, 200, 160),(x,y),20)
                     x += 50                    
         pygame.display.update()
     pygame.quit()
