@@ -83,7 +83,7 @@ pygame.init()
 # making the main screen
 screen = pygame.display.set_mode((600, 400))
 pygame.display.set_caption( 'Pick the Block' )
-BG_COLOR = (20, 200, 160)
+BG_COLOR = (100, 200, 160)
 screen.fill( BG_COLOR )
 
 # a function for making buttons
