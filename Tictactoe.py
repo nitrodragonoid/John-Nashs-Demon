@@ -266,27 +266,6 @@ def game_board_full():
 
 	return True
 
-# checks if there are 3 moves in succession on the board and then calls line functions to draw a line
-def check_3_moves(player):
-	for col in range(COLUMNS):
-		if game_board[0][col] == player and game_board[1][col] == player and game_board[2][col] == player:
-			win_line_verical(col, player)
-			return True
-
-	for row in range(ROWS):
-		if game_board[row][0] == player and game_board[row][1] == player and game_board[row][2] == player:
-			win_line_horizontal(row, player)
-			return True
-
-	if game_board[2][0] == player and game_board[1][1] == player and game_board[0][2] == player:
-		return True
-
-	if game_board[0][0] == player and game_board[1][1] == player and game_board[2][2] == player:
-		descending_diagonal_line(player)
-		return True
-
-	return False
-
 # draws a line if the 3 winning moves are in a vertical line
 def win_line_verical(col, player):
 	posX = col * MOVE_SPACE_SIZE + MOVE_SPACE_SIZE//2
@@ -326,6 +305,30 @@ def descending_diagonal_line(player):
 		color = CROSS_COLOR
 
 	pygame.draw.line( screen, color, (15, 15), (WIDTH - 15, HEIGHT - 15), END_OF_GAME_LINE )
+
+
+# checks if there are 3 moves in succession on the board and then calls line functions to draw a line
+def check_3_moves(player):
+	for col in range(COLUMNS):
+		if game_board[0][col] == player and game_board[1][col] == player and game_board[2][col] == player:
+			win_line_verical(col, player)
+			return True
+
+	for row in range(ROWS):
+		if game_board[row][0] == player and game_board[row][1] == player and game_board[row][2] == player:
+			win_line_horizontal(row, player)
+			return True
+
+	if game_board[2][0] == player and game_board[1][1] == player and game_board[0][2] == player:
+		ascending_diagonal_line(player)
+		return True
+
+	if game_board[0][0] == player and game_board[1][1] == player and game_board[2][2] == player:
+		descending_diagonal_line(player)
+		return True
+
+	return False
+
 
 def restart():
 	screen.fill( BG_COLOR )
