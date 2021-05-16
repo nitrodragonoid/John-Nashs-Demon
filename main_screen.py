@@ -45,11 +45,11 @@ def mainmenu():
             # checks if the mouse has been clicked 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if tic_tac_toe.collidepoint(pygame.mouse.get_pos()):
-                    pass
+                    pass # edit here
                 elif domineering.collidepoint(pygame.mouse.get_pos()):
-                    pass
+                    pass # edit here
                 elif pick_the_brick.collidepoint(pygame.mouse.get_pos()):
-                    pass
+                    pass # edit here
         pygame.display.update()
     pygame.quit()
 
