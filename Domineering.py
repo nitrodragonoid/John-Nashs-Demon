@@ -1,5 +1,23 @@
-game_tree = dict()
+from numpy.lib.function_base import append
+import pygame
+import numpy as np
+pygame.init()
 grid = [[0 for _ in range(4)] for __ in range(3)]
+
+
+def lines():
+    pygame.draw.line(interface, (255, 255, 255), (20, 100), (620, 100), 5)
+    pygame.draw.line(interface, (255, 255, 255), (20, 250), (620, 250), 5)
+    pygame.draw.line(interface, (255, 255, 255), (20, 400), (620, 400), 5)
+    pygame.draw.line(interface, (255, 255, 255), (20, 550), (620, 550), 5)
+    pygame.draw.line(interface, (255, 255, 255), (20, 100), (20, 550), 5)
+    pygame.draw.line(interface, (255, 255, 255), (170, 100), (170, 550), 5)
+    pygame.draw.line(interface, (255, 255, 255), (320, 100), (320, 550), 5)
+    pygame.draw.line(interface, (255, 255, 255), (470, 100), (470, 550), 5)
+    pygame.draw.line(interface, (255, 255, 255), (620, 100), (620, 550), 5)
+
+
+game_tree = dict()
 
 
 def push(stack, item):
@@ -116,17 +134,8 @@ def possible_combinations(grid, p_no):
 
 
 def update_grid(grid, idx1, idx2, p_no):
-    while True:
-        a = idx1.split()
-        a = [int(i) for i in a]
-        b = idx2.split()
-        b = [int(i) for i in b]
-        if (a[0]+1 == b[0] and a[1] == b[1]):
-            break
-        elif (a[0] == b[0] and a[1]+1 == b[1]):
-            break
-        idx1 = int(input("Enter Valid Index 1: "))
-        idx2 = int(input("Enter Valid Index 2: "))
+    a = idx1
+    b = idx2
     if (a[0]+1 == b[0] and a[1] == b[1]):
         grid[a[0]][a[1]] = str(p_no)+"v"
         grid[b[0]][b[1]] = str(p_no)+"v"
@@ -158,16 +167,31 @@ def bot(grid, p_no, graph):
     parent[temp] = temp
     dfs(graph, temp, p_no, visited, parent)
     a = tuple()
+    cd = True
     for i in visited:
         if len(graph[i]) == 0:
             a = i
             break
+    if len(a) == 0:
+        for i in visited:
+            if i != temp:
+                a = i
+                cd = False
+                break
     sequence = list()
     while a != temp:
         sequence.append(a)
         a = parent[a]
     sequence.append(temp)
-    return sequence[-2]
+    for i in sequence:
+        display_grid(i)
+        print()
+    if cd:
+        return sequence[-2]
+    else:
+        for i in sequence:
+            if i != temp:
+                return i
 
 
 def tuple_to_list(grid):
@@ -177,6 +201,88 @@ def tuple_to_list(grid):
     return lst
 
 
+def list_coordinates(cod):
+    x = float('inf')
+    y = float('inf')
+    if cod[0] in range(20, 171):
+        y = 0
+    elif cod[0] in range(171, 321):
+        y = 1
+    elif cod[0] in range(321, 471):
+        y = 2
+    elif cod[0] in range(471, 621):
+        y = 3
+    if cod[1] in range(100, 251):
+        x = 0
+    elif cod[1] in range(251, 401):
+        x = 1
+    elif cod[1] in range(401, 551):
+        x = 2
+    return (x, y)
+
+
+def is_adjacent(pos_1, pos_2):
+    if pos_1[0]+1 == pos_2[0] and pos_1[1] == pos_2[1]:
+        return True
+    elif pos_1[0] == pos_2[0] and pos_1[1]+1 == pos_2[1]:
+        return True
+    return False
+
+
+def is_vertical(st1, st2):
+    if st1[0]+1 == st2[0]:
+        return True
+
+
+def make_square(interface, player_no, st1, st2):
+    if player_no == 1:
+        color = red
+        color_1 = blue
+    else:
+        color = blue
+        color_1 = red
+
+    if st1[0]+1 == st2[0]:
+        a = pygame.Rect(left_scale[st1[1]]+2,
+                        top_scale[st1[0]]+2, 146, 296)
+        text = font.render(str(player_no), True, color_1)
+        textrect = text.get_rect()
+        textrect.center = (
+            (left_scale[st1[1]]+75, (top_scale[st1[0]]+150)))
+    else:
+        a = pygame.Rect(left_scale[st1[1]]+2,
+                        top_scale[st1[0]]+2, 296, 146)
+        text = font.render(str(player_no), True, color_1)
+        textrect = text.get_rect()
+        textrect.center = (
+            (left_scale[st1[1]]+150), (top_scale[st1[0]]+75))
+    pygame.draw.rect(interface, color, a)
+    b = pygame.Rect(0, 0, 640, 97.5)
+    pygame.draw.rect(interface, black, b)
+    interface.blit(text, textrect)
+
+
+def add_cods(previous, now):
+    req = []
+    for i in range(len(previous)):
+        for j in range(len(previous[i])):
+            if previous[i][j] != now[i][j]:
+                req.append((i, j))
+    return req
+
+
+def comes_after(pos_1, pos_2):
+    if pos_1[0] > pos_2[0]:
+        return True
+    elif pos_1[1] > pos_2[1]:
+        return True
+    return False
+
+
+red = (255, 0, 0)
+blue = (0, 0, 255)
+white = (255, 255, 255)
+black = (0, 0, 0)
 test1 = [['1h', '1h', 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 count = 0
 
@@ -184,6 +290,7 @@ count = 0
 nodes = []
 edges = []
 queue = []
+
 a = list_to_tuple(grid)
 enQueue(queue, a)
 nodes.append(a)
@@ -203,18 +310,66 @@ addEdges(game_tree, edges, True)
 count = 0
 last_turn = 0
 
-while not(is_full(grid)):
-    p_no = player_determiner(grid)
-    display_grid(grid)
-    print(f"Player {p_no} turn.")
-    if count % 2 == 0:
-        idx1 = input("Enter Index 1: ")
-        idx2 = input("Enter Index 2: ")
-        update_grid(grid, idx1, idx2, p_no)
-    elif count % 2 != 0:
-        x = bot(grid, player_determiner(test1), game_tree)
-        grid = tuple_to_list(x).copy()
-    last_turn = p_no
-    count += 1
-display_grid(grid)
-print(f"Game Over! Player {p_no} Won !!")
+interface = pygame.display.set_mode((640, 570))
+pygame.display.set_caption("Domineering")
+interface.fill((0, 0, 0))
+board = np.zeros((3, 4))
+font = pygame.font.Font('freesansbold.ttf', 40)
+left_scale = {0: 20, 1: 170, 2: 320, 3: 470}
+top_scale = {0: 100, 1: 250, 2: 400}
+turn = 0
+used_space = []
+lines()
+closed = False
+while not(closed):
+    a = player_determiner(grid)
+    if is_full(grid):
+        winner = int()
+        if a == 2:
+            winner = 1
+        else:
+            winner = 2
+        b = pygame.Rect(0, 0, 640, 97.5)
+        pygame.draw.rect(interface, black, b)
+        text = font.render('''Player ''' + str(winner) +
+                           ''' Won !!''', True, (255, 255, 255))
+        textrect = text.get_rect()
+        textrect.center = (320, 40)
+    else:
+        text = font.render('''Player ''' + str(a) +
+                           ''''s Turn''', True, (255, 255, 255))
+        textrect = text.get_rect()
+        textrect.center = (320, 40)
+    interface.blit(text, textrect)
+    for i in pygame.event.get():
+        if i.type == pygame.QUIT:
+            closed = True
+        if i.type == pygame.MOUSEBUTTONDOWN and is_full(grid):
+            pass
+        if i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 0 and not(is_full(grid)):
+            coord_1 = list_coordinates(i.pos)
+            if not(coord_1 in used_space):
+                count += 0.5
+                used_space.append(coord_1)
+        elif i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 1 and not(is_full(grid)):
+            coord_2 = list_coordinates(i.pos)
+            if not(coord_2 in used_space):
+                if comes_after(coord_1, coord_2):
+                    temp = coord_1
+                    coord_1 = coord_2
+                    coord_2 = temp
+                if is_adjacent(coord_1, coord_2):
+                    used_space.append(coord_2)
+                    update_grid(grid, coord_1, coord_2, a)
+                    make_square(interface, a, coord_1, coord_2)
+                    count += 0.5
+                    turn += 1
+
+        elif turn % 2 == 1 and not(is_full(grid)):
+            x = bot(grid, player_determiner(test1), game_tree)
+            coords = add_cods(grid, tuple_to_list(x))
+            used_space.extend(coords)
+            grid = tuple_to_list(x).copy()
+            make_square(interface, a, coords[0], coords[1])
+            turn += 1
+    pygame.display.update()
