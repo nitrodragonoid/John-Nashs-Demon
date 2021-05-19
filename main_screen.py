@@ -17,9 +17,11 @@ def button(screen, position, text):
 
 # making the main screen back ground
 main_screen = pygame.display.set_mode((640, 570))
-pygame.display.set_caption( 'Pick the Block' )
+pygame.display.set_caption( "Game Bot" )
 BG_COLOR = (0, 0, 0)
 main_screen.fill( BG_COLOR )
+
+
 
 # main function for the screen
 def mainmenu():
@@ -28,12 +30,12 @@ def mainmenu():
     font = pygame.font.SysFont('timesnewroman', 50)
     text = font.render("John Nash's Demon",True,(150, 100, 100))
     textRect = text.get_rect()
-    textRect.center = (320, 85)
+    textRect.center = (320, 90)
     main_screen.blit(text,textRect)
-    hex = button(main_screen,(280,200), "Hex")
-    tic_tac_toe = button(main_screen, (205, 300), "Tic Tac Toe")
+    hex = button(main_screen,(282,200), "Hex")
+    tic_tac_toe = button(main_screen, (207, 300), "Tic Tac Toe")
     domineering = button(main_screen, (193, 400), "Domineering")
-    pick_the_brick = button(main_screen,(180,500), "Pick the Brick")
+    pick_the_brick = button(main_screen,(177,500), "Pick the Block")
 
 
     while True:
