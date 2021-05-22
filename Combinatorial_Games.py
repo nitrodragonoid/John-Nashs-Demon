@@ -1301,101 +1301,84 @@ def display(state):
 ####### alpha beta pruning #######
 
 
-def max_value_hx(state, connections):
-    if is_ended_hx(state, connections) == True:
-        return utility_hx(state, connections)
+def max_value_hx(state,connections):
+    if is_ended_hx(state,connections) == True:
+        return utility_hx(state,connections)
     v = -9999999
     for a in action_hx(state):
-        v = max(v, min_value_hx(result_hx(state, a), connections))
-        if v == 1:
-            break
+        v = max(v,min_value_hx(result_hx(state,a),connections))
     return v
 
-
-def min_value_hx(state, connections):
-    if is_ended_hx(state, connections) == True:
-        return utility_hx(state, connections)
+def min_value_hx(state,connections):
+    if is_ended_hx(state,connections) == True:
+        return utility_hx(state,connections)
     v = 9999999
     for a in action_hx(state):
-        v = min(v, max_value_hx(result_hx(state, a), connections))
-        if v == -1:
-            break
+        v = min(v,max_value_hx(result_hx(state,a),connections))
     return v
 
-
-def max_pruning_hx(state, connections, beta):
-    if is_ended_hx(state, connections) == True:
-        return utility_hx(state, connections)
+def max_pruning_hx(state,connections,beta):
+    if is_ended_hx(state,connections) == True:
+        return utility_hx(state,connections)
     v = -9999999
     for a in action_hx(state):
-        check = min_pruning_hx(result_hx(state, a), connections, beta)
+        check = min_pruning_hx(result_hx(state,a),connections,beta)
         if v < check:
             v = check
-        if check >= beta:
-            break
-        if v == 1:
+        if check < beta:
             break
     return v
 
-
-def min_pruning_hx(state, connections, alpha):
-    if is_ended_hx(state, connections) == True:
-        return utility_hx(state, connections)
+def min_pruning_hx(state,connections,alpha):
+    if is_ended_hx(state,connections) == True:
+        return utility_hx(state,connections)
     v = 9999999
     for a in action_hx(state):
-        check = max_pruning_hx(result_hx(state, a), connections, alpha)
+        check = max_pruning_hx(result_hx(state,a),connections,alpha)
         if v > check:
             v = check
-        if check <= alpha:
-            break
-        if v == -1:
+        if check > alpha:
             break
     return v
 
 
-def MAX_hx(state, connections):
+def MAX_hx(state,connections):
     val = -9999999
     moves = action_hx(state)
-    for a in moves:
+    for a in moves:     
         if a == moves[0]:
-            x = min_value_hx(result_hx(state, a), connections)
+            x = min_value_hx(result_hx(state,a),connections)
             if x > val:
                 val = x
                 best = a
         else:
-            x = min_pruning_hx(result_hx(state, a), connections, val)
+            x = min_pruning_hx(result_hx(state,a),connections,val)
             if x > val:
                 val = x
                 best = a
-        if val == 1:
-            break
     return best
 
-
-def MIN_hx(state, connections):
+def MIN_hx(state,connections):
     val = 9999999
     moves = action_hx(state)
-    for a in moves:
+    for a in moves:     
         if a == moves[0]:
-            x = max_value_hx(result_hx(state, a), connections)
+            x = max_value_hx(result_hx(state,a),connections)
             if x < val:
                 val = x
                 best = a
         else:
-            x = max_pruning_hx(result_hx(state, a), connections, val)
+            x = max_pruning_hx(result_hx(state,a),connections,val)
             if x < val:
                 val = x
                 best = a
-        if val == -1:
-            break
     return best
 
-
-def minimax_hx(state, connections):
+def minimax_hx(state,connections):
     if check_turn_hx(state) == "O":
-        return MIN_hx(state, connections)
+        return MIN_hx(state,connections)
     elif check_turn_hx(state) == "X":
-        return MAX_hx(state, connections)
+        return MAX_hx(state,connections)
 ####### END #######
 
 
