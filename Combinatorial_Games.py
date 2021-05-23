@@ -754,8 +754,6 @@ def domineering_screen(screen):
     closed = False
     while not(closed):
         a = player_determiner(grid_t)
-        print(grid_t)
-        print(a)
         if is_full(grid_t):
             winner = int()
             if a == 2:
@@ -1387,7 +1385,7 @@ def result_hx(state, move):
 def max_value_hx(state, connections):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = -9999999
+    v = -float('inf')
     for a in action_hx(state):
         v = max(v, min_value_hx(result_hx(state, a), connections))
     return v
@@ -1398,7 +1396,7 @@ def max_value_hx(state, connections):
 def min_value_hx(state, connections):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = 9999999
+    v = float('inf')
     for a in action_hx(state):
         v = min(v, max_value_hx(result_hx(state, a), connections))
     return v
@@ -1409,7 +1407,7 @@ def min_value_hx(state, connections):
 def max_pruning_hx(state, connections, beta):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = -9999999
+    v = -float('inf')
     for a in action_hx(state):
         check = min_pruning_hx(result_hx(state, a), connections, beta)
         if v < check:
@@ -1424,7 +1422,7 @@ def max_pruning_hx(state, connections, beta):
 def min_pruning_hx(state, connections, alpha):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = 9999999
+    v = float('inf')
     for a in action_hx(state):
         check = max_pruning_hx(result_hx(state, a), connections, alpha)
         if v > check:
@@ -1437,7 +1435,7 @@ def min_pruning_hx(state, connections, alpha):
 
 
 def MAX_hx(state, connections):
-    val = -9999999
+    val = -float('inf')
     moves = action_hx(state)
     for a in moves:
         if a == moves[0]:
@@ -1456,7 +1454,7 @@ def MAX_hx(state, connections):
 
 
 def MIN_hx(state, connections):
-    val = 9999999
+    val = float('inf')
     moves = action_hx(state)
     for a in moves:
         if a == moves[0]:
