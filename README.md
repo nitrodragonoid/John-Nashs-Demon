@@ -1,4 +1,4 @@
-*"John Nash's Demon" - Combinatorial Game bot*
+# **John Nash's Demon**
 
 Hi Everyone and Welcome to our project for the Data Structures And Algorithms. Our project contains 4 games with in a game and we generated a bot that plays the game with the user which are implemented using various data structures and algorithms. Following is the list of games that we made:
 1) Tic-Tac-Toe
