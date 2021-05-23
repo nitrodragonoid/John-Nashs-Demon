@@ -1,29 +1,38 @@
+# Importing required libraries
 import pygame
 import pygame.gfxdraw
 import time
 pygame.init()
+# Different colors used in GUI
 red = (255, 0, 0)
 blue = (0, 0, 255)
 white = (255, 255, 255)
 black = (0, 0, 0)
+# Initializing Tic-tac-toe board and determining several helping data
 board_ttt = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+left_scale_ttt = {0: 95, 1: 245, 2: 395}
+top_scale_ttt = {0: 100, 1: 250, 2: 400}
+# Determining UI size
 width = 640
 height = 570
+# Initializing the fonts used throoughout
 font = pygame.font.Font('freesansbold.ttf', 40)
 large_font = pygame.font.Font('freesansbold.ttf', 150)
 small_font = pygame.font.Font('freesansbold.ttf', 20)
-left_scale_ttt = {0: 95, 1: 245, 2: 395}
-top_scale_ttt = {0: 100, 1: 250, 2: 400}
+# Initializing Game Tree, board and determinig several other helping data for Domineering
 game_tree_dm = dict()
 grid_dm = [[0 for _ in range(4)] for __ in range(3)]
 left_scale_dm = {0: 20, 1: 170, 2: 320, 3: 470}
 top_scale_dm = {0: 100, 1: 250, 2: 400}
+# Initializing board for Pick the block game
 bricks = 10
 turn = 1
 board = [bricks, turn]
 
 
 ''' Tic Tac Toe '''
+# Tictactoe main/helper functions
+# Function that determines whether the state has ended or not
 
 
 def is_ended_ttt(state):
@@ -51,6 +60,8 @@ def is_ended_ttt(state):
         return True
     # if game not ended
     return False
+
+# assigns a utility to a ended game board
 
 
 def utility_ttt(state):
@@ -103,6 +114,8 @@ def action_ttt(state, turn):  # outputs the list of all the possible moves
                 out.append(move)
     return out
 
+# Combines the move with the state
+
 
 def result_ttt(state, move):
     temp = []
@@ -113,6 +126,8 @@ def result_ttt(state, move):
             if move[i][j] != 0:
                 temp[i][j] = move[i][j]
     return temp
+
+# Determines which player will play next
 
 
 def check_turn_ttt(state):
@@ -128,6 +143,8 @@ def check_turn_ttt(state):
         return "O"
     else:
         return "X"
+
+# Draws a line where a player ends up in winning a match
 
 
 def draw_win_line(state):
@@ -201,27 +218,33 @@ def draw_win_line(state):
             pygame.draw.line(
                 screen, blue, (left_scale_ttt[start[1]]+150, top_scale_ttt[start[0]]), (left_scale_ttt[end[1]], 550))
 
+# returns maximum value
+
 
 def max_value_ttt(state):
     if is_ended_ttt(state) == True:
         return utility_ttt(state)
-    v = -9999999
+    v = -float('inf')
     for a in action_ttt(state, check_turn_ttt(state)):
         v = max(v, min_value_ttt(result_ttt(state, a)))
     return v
+
+# returns minimum value
 
 
 def min_value_ttt(state):
     if is_ended_ttt(state) == True:
         return utility_ttt(state)
-    v = 9999999
+    v = float('inf')
     for a in action_ttt(state, check_turn_ttt(state)):
         v = min(v, max_value_ttt(result_ttt(state, a)))
     return v
 
+# Max function of minimax
+
 
 def MAX_ttt(state):
-    val = -9999999
+    val = -float('inf')
     for a in action_ttt(state, check_turn_ttt(state)):
         check = state.copy()
         y = min_value_ttt(result_ttt(check, a))
@@ -230,9 +253,11 @@ def MAX_ttt(state):
             best = a
     return best
 
+# Min function of minimax
+
 
 def MIN_ttt(state):
-    val = 9999999
+    val = float('inf')
     for a in action_ttt(state, check_turn_ttt(state)):
         check = state.copy()
         x = max_value_ttt(result_ttt(check, a))
@@ -241,6 +266,8 @@ def MIN_ttt(state):
             best = a
     return best
 
+# minimax algorithm main_call
+
 
 def minimax_ttt(state):
     if check_turn_ttt(state) == "O":
@@ -248,10 +275,14 @@ def minimax_ttt(state):
     elif check_turn_ttt(state) == "X":
         return MAX_ttt(state)
 
+# creates a full black screen
+
 
 def blank():
     pygame.gfxdraw.filled_polygon(
         screen, [(0, 0), (640, 0), (640, 570), (0, 570)], black)
+
+# Draws the board for tictactoe
 
 
 def lines_ttt():
@@ -265,6 +296,8 @@ def lines_ttt():
     pygame.draw.line(screen, white, (545, 100), (545, 550), 5)
 
     return True
+
+# Converts the coordinates of clicked point into the corresponding indices of nested lists (board)
 
 
 def list_coordinates_ttt(a, b):
@@ -284,12 +317,16 @@ def list_coordinates_ttt(a, b):
         x = 2
     return (x, y)
 
+# Draws X
+
 
 def make_x(coord):
     text = large_font.render("×", True, red)
     textrect = text.get_rect()
     textrect.center = (left_scale_ttt[coord[1]]+75, top_scale_ttt[coord[0]]+75)
     screen.blit(text, textrect)
+
+# Draws O
 
 
 def make_o(coord):
@@ -298,12 +335,16 @@ def make_o(coord):
     textrect.center = (left_scale_ttt[coord[1]]+75, top_scale_ttt[coord[0]]+75)
     screen.blit(text, textrect)
 
+# Detects a change made from current state to next state
+
 
 def change_made_ttt(initial, final):
     for i in range(len(initial)):
         for j in range(len(final)):
             if initial[i][j] != final[i][j]:
                 return (i, j)
+
+# tic-tac-toe driver code
 
 
 def tic_tac_toe(screen, board_ttt):
@@ -316,6 +357,7 @@ def tic_tac_toe(screen, board_ttt):
     done_spaces = []
     while not(exited):
         a = check_turn_ttt(board_ttt)
+        print(a)
         b = pygame.Rect(0, 0, 640, 97.5)
         pygame.draw.rect(screen, black, b)
         pygame.draw.line(screen, white, (20, 45), (80, 45), 1)
@@ -349,6 +391,10 @@ def tic_tac_toe(screen, board_ttt):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 20 <= event.pos[0] < 80 and 15 <= event.pos[1] <= 45:
+                    blank()
+                    return False
             if is_ended_ttt(board_ttt):
                 pass
             if event.type == pygame.MOUSEBUTTONDOWN and not(is_ended_ttt(board_ttt)) and turn % 2 == 0:
@@ -376,6 +422,8 @@ def tic_tac_toe(screen, board_ttt):
 
 ''' Domineering '''
 
+# Draws a domineering game board
+
 
 def lines_dm():
     pygame.draw.line(screen, (255, 255, 255), (20, 100), (620, 100), 5)
@@ -387,6 +435,8 @@ def lines_dm():
     pygame.draw.line(screen, (255, 255, 255), (320, 100), (320, 550), 5)
     pygame.draw.line(screen, (255, 255, 255), (470, 100), (470, 550), 5)
     pygame.draw.line(screen, (255, 255, 255), (620, 100), (620, 550), 5)
+
+# Stack Helper functions
 
 
 def push(stack, item):
@@ -400,11 +450,15 @@ def pop(stack):
 def top(stack):
     return stack[-1]
 
+# adding nodes to a graph
+
 
 def addNodes(G, nodes):
     for i in nodes:
         G[i] = list()
     return G
+
+# adding edges to a graph
 
 
 def addEdges(G, edges, directed=False):
@@ -423,6 +477,8 @@ def addEdges(G, edges, directed=False):
                 return False
     return G
 
+# Queue helper functions
+
 
 def enQueue(queue, item):
     queue.append(item)
@@ -439,6 +495,8 @@ def front(queue):
 def is_empty(queue):
     return len(queue) == 0
 
+# List representation of board to to tuple ( so that we can store the states as nodes(keys of dictionary)
+
 
 def list_to_tuple(grid):
     tmp = grid.copy()
@@ -446,6 +504,8 @@ def list_to_tuple(grid):
     for i in tmp:
         req += (tuple(i),)
     return req
+
+# Determines which player to play next
 
 
 def player_determiner(grid):
@@ -458,6 +518,8 @@ def player_determiner(grid):
     if count % 2 == 1:
         return 2
     return 1
+
+# Determines whether the grid is fully filled or not
 
 
 def is_full(grid):
@@ -475,6 +537,8 @@ def is_full(grid):
                     if grid[i][j+1] == 0:
                         return False
     return True
+
+# Returns all the possible next states from a certain state
 
 
 def possible_combinations(grid, p_no):
@@ -501,6 +565,8 @@ def possible_combinations(grid, p_no):
                     req.append(b)
     return req
 
+# updates the grid given the coordinates of the move made
+
 
 def update_grid(grid, idx1, idx2, p_no):
     a = idx1
@@ -512,6 +578,8 @@ def update_grid(grid, idx1, idx2, p_no):
         grid[a[0]][a[1]] = str(p_no)+"h"
         grid[b[0]][b[1]] = str(p_no)+"h"
 
+# Depth first search algorithm
+
 
 def dfs(graph, current_state, comp_no, visited, parent):
     visited.append(current_state)
@@ -522,6 +590,8 @@ def dfs(graph, current_state, comp_no, visited, parent):
                 return
             else:
                 dfs(graph, i[0], comp_no, visited, parent)
+
+# Bot that works using dfs
 
 
 def bot(grid, p_no, graph):
@@ -554,12 +624,16 @@ def bot(grid, p_no, graph):
             if i != temp:
                 return i
 
+# tuple form of grid to list converter
+
 
 def tuple_to_list(grid):
     lst = []
     for i in grid:
         lst.append(list(i))
     return lst
+
+# scaling the coordinates on the UI to the corespong one on the nested lists
 
 
 def list_coordinates_dm(cod):
@@ -581,6 +655,8 @@ def list_coordinates_dm(cod):
         x = 2
     return (x, y)
 
+# checks if the two click oints corresponds to adjacent boxes or not
+
 
 def is_adjacent(pos_1, pos_2):
     if pos_1[0]+1 == pos_2[0] and pos_1[1] == pos_2[1]:
@@ -589,10 +665,14 @@ def is_adjacent(pos_1, pos_2):
         return True
     return False
 
+# checks if the rectangle to be placed is vertical or not
+
 
 def is_vertical(st1, st2):
     if st1[0]+1 == st2[0]:
         return True
+
+# Makes a rectangle where a move is made
 
 
 def make_rec(interface, player_no, st1, st2):
@@ -622,6 +702,8 @@ def make_rec(interface, player_no, st1, st2):
     pygame.draw.rect(interface, black, b)
     interface.blit(text, textrect)
 
+# adds new coordinates in the nested list version of grid
+
 
 def add_cods(previous, now):
     req = []
@@ -630,6 +712,8 @@ def add_cods(previous, now):
             if previous[i][j] != now[i][j]:
                 req.append((i, j))
     return req
+
+# checks if the first click point comes after the second
 
 
 def comes_after(pos_1, pos_2):
@@ -640,6 +724,7 @@ def comes_after(pos_1, pos_2):
     return False
 
 
+# completing/expanding the game tree
 nodes = []
 edges = []
 queue = []
@@ -659,6 +744,8 @@ while not(is_empty(queue)):
             edges.append((parent, i, 1))
 addNodes(game_tree_dm, nodes)
 addEdges(game_tree_dm, edges, True)
+
+# Driver code for Domineering
 
 
 def domineering_screen(screen, grid):
@@ -735,7 +822,7 @@ def domineering_screen(screen, grid):
         pygame.display.update()
 
 
-# the defined game functions above are used to construct the interface below this line
+# used to construct the interface
 def button_pb(screen, position, text):
     font = pygame.font.SysFont('timesnewroman', 50)
     text_render = font.render(text, 1, (150, 100, 100))
@@ -749,6 +836,8 @@ def button_pb(screen, position, text):
                                            y + height), [x + width, y], 5)
     pygame.draw.rect(screen, (0, 0, 0), (x, y, width, height))
     return screen.blit(text_render, (x, y))
+
+# create the menu for pick the block i.e the  driver code
 
 
 def menu_pb(state):
@@ -863,9 +952,9 @@ def menu_pb(state):
                     blank()
                     return False
             if is_ended_pb(state):
-                continue
+                pass
             # checks if the mouse has been clicked
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 # checks if 1 block has to be picked or 2 according to the move.
                 # Makes the bot unravel its algorithm, and make the move accordingly.
                 # To be updated with the bot, changes to be made as the bot will not click the mouse
@@ -972,10 +1061,11 @@ def menu_pb(state):
             pygame.display.update()
 
 
-####### BOT #######
 bricks = 10
 turn = 1
 board = [bricks, turn]
+
+# checks if the state is ended or not
 
 
 def is_ended_pb(state):
@@ -984,6 +1074,8 @@ def is_ended_pb(state):
     else:
         return True
 
+# assigns a utility to a ended game board
+
 
 def utility_pb(state):
     if (state[0] == 0) and (state[1] == 1):  # turn being 2 means that player 2 did the last move
@@ -991,6 +1083,8 @@ def utility_pb(state):
     # turn being 2 means that player 1 did the last move
     elif (state[0] == 0) and (state[1] == 2):
         return 1
+
+# outputs the list of all the possible moves
 
 
 def action_pb(state):
@@ -1006,6 +1100,8 @@ def action_pb(state):
         out.append((2, next))
     return out
 
+# combines the move with the state i.e. updates the state
+
 
 def result_pb(state, move):
     temp = state.copy()  # make a copy of the board so the og board isnt effected
@@ -1015,31 +1111,31 @@ def result_pb(state, move):
     return temp
 
 
-def display_pb(state):
-    print("Blocks left: ", state[0])
-    print("Next move is of player " + str(state[1]) + "\n")
-
-
+# returns maximum
 def max_value_pb(state):
     if is_ended_pb(state) == True:
         return utility_pb(state)
-    v = -9999999
+    v = -float('inf')
     for a in action_pb(state):
         v = max(v, min_value_pb(result_pb(state, a)))
     return v
+
+# returns minimum
 
 
 def min_value_pb(state):
     if is_ended_pb(state) == True:
         return utility_pb(state)
-    v = 9999999
+    v = float('inf')
     for a in action_pb(state):
         v = min(v, max_value_pb(result_pb(state, a)))
     return v
 
+# Max function of the minimax algorithm
+
 
 def MAX_pb(state):
-    val = -9999999
+    val = -float('inf')
     for a in action_pb(state):
         check = state.copy()
         w = min_value_pb(result_pb(check, a))
@@ -1048,9 +1144,11 @@ def MAX_pb(state):
             best = a
     return best
 
+# Min function of the minimax algorithm
+
 
 def MIN_pb(state):
-    val = 9999999
+    val = float('inf')
     for a in action_pb(state):
         check = state.copy()
         z = max_value_pb(result_pb(check, a))
@@ -1059,59 +1157,16 @@ def MIN_pb(state):
             best = a
     return best
 
+# minimax algorithm main function
+
 
 def minimax_pb(state):
     if state[1] == 2:
         return MIN_pb(state)
     elif state[1] == 1:
         return MAX_pb(state)
-##### Queue helper functions #####
 
-
-def enQueue(queue, item):
-    queue.append(item)
-    return queue
-
-
-def deQueue(queue):
-    c = queue[0]
-    queue.pop(0)
-    return c
-
-
-def getFront(queue):
-    return queue[0]
-
-
-def displayQueue(queue):
-    print(queue)
-
-
-def is_emptyQueue(queue):
-    if len(queue) == 0:
-        return True
-    else:
-        return False
-##### end #####
-
-# Helper functions for the graph
-
-
-def addNodes(G, nodes):
-    for i in nodes:
-        G[i] = []
-    return G
-
-
-def addEdges(G, edges, directed=False):
-    if directed == True:
-        for i in range(len(edges)):
-            G[edges[i][0]].append((edges[i][1], edges[i][2]))
-    elif directed == False:
-        for i in range(len(edges)):
-            G[edges[i][0]].append((edges[i][1], edges[i][2]))
-            G[edges[i][1]].append((edges[i][0], edges[i][2]))
-    return G
+# returns list of all nodes in a graph
 
 
 def listOfNodes(G):
@@ -1120,6 +1175,8 @@ def listOfNodes(G):
         nodeslist.append(i)
     return nodeslist
 
+# returns neigbours of a node in the graph
+
 
 def getNeighbors(G, node):
     out = []
@@ -1127,12 +1184,7 @@ def getNeighbors(G, node):
         out.append(j[0])
     return out
 
-
-def displayGraph(G):
-    for i in G:
-        print(i, ":", G[i])
-
-####### END #######
+# returns a list of nodes to be added to the graph given the state
 
 
 def makes_node(board):
@@ -1141,6 +1193,8 @@ def makes_node(board):
         for j in range(len(board)):
             nodes.append((i, j))
     return nodes
+
+# returns list of the edges to be added to the graph given the state
 
 
 def make_edges(board):
@@ -1175,6 +1229,8 @@ def make_edges(board):
                 edges.append(((i, j), (i, j+1), 1))
     return edges
 
+# checks if its player 1's turn
+
 
 def check_player_1_hx(state, G):
     # checking is a path can exist
@@ -1192,8 +1248,8 @@ def check_player_1_hx(state, G):
     visited = []  # to keep track a node is visited
     nodes = listOfNodes(G)
     enQueue(queue, "start 1")  # start searching from the start
-    while is_emptyQueue(queue) == False:  # loop untill all nodes are visited
-        f = getFront(queue)  # get the front of the queue
+    while is_empty(queue) == False:  # loop untill all nodes are visited
+        f = front(queue)  # get the front of the queue
         if f not in visited:
             visited.append(f)  # make sure to mark the first node as visited
         # get all the nodes connested to the node on the front of the queue
@@ -1207,9 +1263,11 @@ def check_player_1_hx(state, G):
                     enQueue(queue, i)
                     visited.append(i)  # mark them as visited
         # if queue is not empty remove the front of the queue
-        if is_emptyQueue(queue) == False:
+        if is_empty(queue) == False:
             deQueue(queue)
     return False
+
+# checks if its player 2's turn
 
 
 def check_player_2_hx(state, G):
@@ -1228,8 +1286,8 @@ def check_player_2_hx(state, G):
     visited = []  # to keep track a node is visited
     nodes = listOfNodes(G)
     enQueue(queue, "start 2")  # start searching from the start
-    while is_emptyQueue(queue) == False:  # loop untill all nodes are visited
-        f = getFront(queue)  # get the front of the queue
+    while is_empty(queue) == False:  # loop untill all nodes are visited
+        f = front(queue)  # get the front of the queue
         if f not in visited:
             visited.append(f)  # make sure to mark the first node as visited
         # get all the nodes connested to the node on the front of the queue
@@ -1243,9 +1301,11 @@ def check_player_2_hx(state, G):
                     enQueue(queue, i)
                     visited.append(i)  # mark them as visited
         # if queue is not empty remove the front of the queue
-        if is_emptyQueue(queue) == False:
+        if is_empty(queue) == False:
             deQueue(queue)
     return False
+
+# checks if the game is ended or not
 
 
 def is_ended_hx(state, connections):
@@ -1253,12 +1313,16 @@ def is_ended_hx(state, connections):
         return True
     return False
 
+# assigns a utility to a ended game board
+
 
 def utility_hx(state, connections):
     if check_player_1_hx(state, connections) == True:
         return 1
     if check_player_2_hx(state, connections) == True:
         return -1
+
+# returns all possible moves that can bbe made from a state
 
 
 def action_hx(state):
@@ -1268,6 +1332,8 @@ def action_hx(state):
             if state[i][j] == 0:
                 moves.append((i, j))
     return moves
+
+# determines whoose turn is next
 
 
 def check_turn_hx(state):
@@ -1284,6 +1350,8 @@ def check_turn_hx(state):
     else:
         return "X"
 
+# combines the move made with the state i.e. updates the state
+
 
 def result_hx(state, move):
     temp = []
@@ -1293,93 +1361,104 @@ def result_hx(state, move):
     return temp
 
 
-def display(state):
-    for i in state:
-        print(i)
-    print("\n")
-
-####### alpha beta pruning #######
-
-
-def max_value_hx(state,connections):
-    if is_ended_hx(state,connections) == True:
-        return utility_hx(state,connections)
-    v = -9999999
+# returns maximum value
+def max_value_hx(state, connections):
+    if is_ended_hx(state, connections) == True:
+        return utility_hx(state, connections)
+    v = -float('inf')
     for a in action_hx(state):
-        v = max(v,min_value_hx(result_hx(state,a),connections))
+        v = max(v, min_value_hx(result_hx(state, a), connections))
     return v
 
-def min_value_hx(state,connections):
-    if is_ended_hx(state,connections) == True:
-        return utility_hx(state,connections)
-    v = 9999999
+# returns minimum value
+
+
+def min_value_hx(state, connections):
+    if is_ended_hx(state, connections) == True:
+        return utility_hx(state, connections)
+    v = float('inf')
     for a in action_hx(state):
-        v = min(v,max_value_hx(result_hx(state,a),connections))
+        v = min(v, max_value_hx(result_hx(state, a), connections))
     return v
 
-def max_pruning_hx(state,connections,beta):
-    if is_ended_hx(state,connections) == True:
-        return utility_hx(state,connections)
-    v = -9999999
+# max function of alpha beta pruning
+
+
+def max_pruning_hx(state, connections, beta):
+    if is_ended_hx(state, connections) == True:
+        return utility_hx(state, connections)
+    v = -float('inf')
     for a in action_hx(state):
-        check = min_pruning_hx(result_hx(state,a),connections,beta)
+        check = min_pruning_hx(result_hx(state, a), connections, beta)
         if v < check:
             v = check
         if check < beta:
             break
     return v
 
-def min_pruning_hx(state,connections,alpha):
-    if is_ended_hx(state,connections) == True:
-        return utility_hx(state,connections)
-    v = 9999999
+# min function of alpha beta pruning
+
+
+def min_pruning_hx(state, connections, alpha):
+    if is_ended_hx(state, connections) == True:
+        return utility_hx(state, connections)
+    v = float('inf')
     for a in action_hx(state):
-        check = max_pruning_hx(result_hx(state,a),connections,alpha)
+        check = max_pruning_hx(result_hx(state, a), connections, alpha)
         if v > check:
             v = check
         if check > alpha:
             break
     return v
 
+# max function of minimax
 
-def MAX_hx(state,connections):
-    val = -9999999
+
+def MAX_hx(state, connections):
+    val = -float('inf')
     moves = action_hx(state)
-    for a in moves:     
+    for a in moves:
         if a == moves[0]:
-            x = min_value_hx(result_hx(state,a),connections)
+            x = min_value_hx(result_hx(state, a), connections)
             if x > val:
                 val = x
                 best = a
         else:
-            x = min_pruning_hx(result_hx(state,a),connections,val)
+            x = min_pruning_hx(result_hx(state, a), connections, val)
             if x > val:
                 val = x
                 best = a
     return best
 
-def MIN_hx(state,connections):
-    val = 9999999
+# min function of minimax
+
+
+def MIN_hx(state, connections):
+    val = float('inf')
     moves = action_hx(state)
-    for a in moves:     
+    for a in moves:
         if a == moves[0]:
-            x = max_value_hx(result_hx(state,a),connections)
+            x = max_value_hx(result_hx(state, a), connections)
             if x < val:
                 val = x
                 best = a
         else:
-            x = max_pruning_hx(result_hx(state,a),connections,val)
+            x = max_pruning_hx(result_hx(state, a), connections, val)
             if x < val:
                 val = x
                 best = a
     return best
 
-def minimax_hx(state,connections):
+# minimax algorithm (with alphe beta pruning)
+
+
+def minimax_hx(state, connections):
     if check_turn_hx(state) == "O":
-        return MIN_hx(state,connections)
+        return MIN_hx(state, connections)
     elif check_turn_hx(state) == "X":
-        return MAX_hx(state,connections)
-####### END #######
+        return MAX_hx(state, connections)
+
+# first move the bot should
 
 
 def first_move_hx(state):
@@ -1397,74 +1476,22 @@ def first_move_hx(state):
     return state
 
 
-def game_playing_x(initial, connections):
-    state = initial
-    while is_ended_hx(state, connections) == False:
-        display(state)
-        command = str(input("Enter move as ij: "))
-        state = result_hx(state, (int(command[0]), int(command[1])))
-        display(state)
-        if is_ended_hx(state, connections) == True:
-            break
-        start = time.time()
-        state = result_hx(state, minimax_hx(state, connections))
-        end = time.time()
-        print(end - start)
-    display(state)
-    if utility_hx(state, connections) == 1:
-        print("You won the game")
-    elif utility_hx(state, connections) == -1:
-        print("You lost the game")
-    else:
-        print("Error")
-
-
-# For 4x4, by fixing the first move to decrease the time complexity
-def game_playing_x_4(initial, connections):
-    state = initial
-    no_turns = 1
-    while is_ended_hx(state, connections) == False:
-        display(state)
-        command = str(input("Enter move as ij: "))
-        state = result_hx(state, (int(command[0]), int(command[1])))
-        display(state)
-        if is_ended_hx(state, connections) == True:
-            break
-        if no_turns > 1:
-            start = time.time()
-            state = result_hx(state, minimax_hx(state, connections))
-            end = time.time()
-            print(end - start)
-        else:
-            state = first_move_hx(state)
-        no_turns += 1
-    display(state)
-    if utility_hx(state, connections) == 1:
-        print("You won the game")
-    elif utility_hx(state, connections) == -1:
-        print("You lost the game")
-    else:
-        print("Error")
-
-
+# board for hex (nested list version)
 board3 = [[0, 0, 0],
           [0, 0, 0],
           [0, 0, 0]]
 
-board4 = [[0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0]]
 
-
+# game tree for hex
 graph = {}
 addNodes(graph, makes_node(board3))
 addEdges(graph, make_edges(board3))
-# game_playing_x(board,graph)
 
 
 l = 51.96152423
 h = 25.98076211
+
+# creats the grid for hex
 
 
 def lines_hx():
@@ -1492,9 +1519,6 @@ def lines_hx():
     a = 0
     b = 0
     c = 0
-    # lst = [(45+h+1, 150+h), (90+h, 151), (135+h-1, 150+h),
-    #        (135+h-1, 150+h+l), (90+h, 150+h+l+h-1), (45+h+1, 150+h+l)]
-    # pygame.gfxdraw.filled_polygon(screen, lst, red)
     for i in range(3):
         pygame.draw.line(screen, white, (x+h+a, 150+c+b+h+l),
                          (x+45+h+a, 150+c+b+h+l+h))
@@ -1503,6 +1527,7 @@ def lines_hx():
         c += h
 
 
+# creation of a nested list data structure which updates the board of the hex in accordance with the position of the click
 hex_vertices = list()
 row1 = []
 x = 0
@@ -1511,6 +1536,9 @@ for i in range(3):
             (135+h-1+x, 150+h+l), (90+h+x, 150+h+l+h-1), (45+h+1+x, 150+h+l)]
     row1.append(hex1.copy())
     x += 90
+temp = row1[0]
+row1[0] = row1[2]
+row1[2] = temp
 hex_vertices.append(row1.copy())
 row1 = []
 x = 0
@@ -1519,6 +1547,9 @@ for i in range(3):
             (180+h-1+x, 150+h+l+h+l), (135+h+x, 150+h+l+h-1+h+l), (90+h+1+x, 150+h+l+h+l)]
     row1.append(hex1.copy())
     x += 90
+temp = row1[0]
+row1[0] = row1[2]
+row1[2] = temp
 hex_vertices.append(row1.copy())
 row1 = []
 x = 0
@@ -1527,38 +1558,54 @@ for i in range(3):
             (225+h-1+x, 150+h+h+l+l+h+l), (180+h+x, 150+h+h+l+l+h-1+h+l), (135+h+1+x, 150+h+h+l+l+h+l)]
     row1.append(hex1.copy())
     x += 90
+temp = row1[0]
+row1[0] = row1[2]
+row1[2] = temp
 hex_vertices.append(row1.copy())
-# row1 = []
-# x = 0
-# for i in range(4):
-#     hex1 = [(180+h+1+x, 150+h+h+l+h+h+l+l), (225+h+x, 151+h+h+l+h+l+l), (270+h-1+x, 150+h+h+l+l+h+h+l),
-#             (270+h-1+x, 150+h+h+l+h+l+l+h+l), (225+h+x, 150+h+h+l+h+l+l+h-1+h+l), (180+h+1+x, 150+h+h+l+h+l+l+h+l)]
-#     row1.append(hex1.copy())
-#     x += 90
-# hex_vertices.append(row1.copy())
+
+
+# converts the coordinates of click position into the corresponding coordinates of the board represented as nnested lists
 
 
 def lst_cord(coord):
     x1 = 0
-    for i in range(4):
+    for i in range(3):
         if 45+h+x1 <= coord[0] <= 135+h+x1 and 150+h <= coord[1] <= 150+h+l:
+            if i == 0:
+                return (0, i+2)
+            elif i == 2:
+                return (0, i-2)
             return (0, i)
         x1 += 90
     x1 = 0
-    for i in range(4):
+    for i in range(3):
         if 90+h+x1 <= coord[0] <= 180+h+x1 and 150+h+h+l <= coord[1] <= 150+h+h+l+l:
+            if i == 0:
+                return (1, i+2)
+            elif i == 2:
+                return (1, i-2)
             return (1, i)
         x1 += 90
     x1 = 0
-    for i in range(4):
+    for i in range(3):
         if 135+h+x1 <= coord[0] <= 225+h+x1 and 150+(3*h)+(2*l) <= coord[1] <= 150+(3*h)+(3*l):
+            if i == 0:
+                return (2, i+2)
+            elif i == 2:
+                return (2, i-2)
             return (2, i)
         x1 += 90
     x1 = 0
-    for i in range(4):
+    for i in range(3):
         if 180+h+x1 <= coord[0] <= 270+h+x1 and 150+4*h+3*l <= coord[1] <= 150+4*h+4*l:
-            return (3, i)
+            if i == 0:
+                return (2, i+2)
+            elif i == 2:
+                return (2, i-2)
+            return (2, i)
         x1 += 90
+
+# makes a hexagon
 
 
 def make_hex(p_no, coord):
@@ -1568,12 +1615,16 @@ def make_hex(p_no, coord):
     pygame.gfxdraw.filled_polygon(
         screen, hex_vertices[coord[0]][coord[1]], color)
 
+# determines the move made by player/bot by comparing the states
+
 
 def change_in_states(initial, final):
     for i in range(len(initial)):
         for j in range(len(initial[i])):
             if initial[i][j] != final[i][j]:
                 return (i, j)
+
+# driver code for hex
 
 
 def hex_game(screen, board3):
@@ -1587,6 +1638,9 @@ def hex_game(screen, board3):
     while not(exited):
         b = pygame.Rect(0, 0, 640, 97.5)
         pygame.draw.rect(screen, black, b)
+        print(is_ended_hx(board3, graph))
+        for i in board3:
+            print(i)
         if is_ended_hx(board3, graph):
             if utility_hx(board3, graph) == 1:
                 text = font.render("Demon Won!", True, white)
@@ -1617,6 +1671,7 @@ def hex_game(screen, board3):
         screen.blit(text, textrect)
         for event in pygame.event.get():
             if is_ended_hx(board3, graph):
+                print(utility_hx(board3, graph))
                 if utility_hx(board3, graph) == 1:
                     text = font.render("Demon Won!", True, white)
                     textrect = text.get_rect()
@@ -1634,6 +1689,7 @@ def hex_game(screen, board3):
                     return False
             if event.type == pygame.MOUSEBUTTONDOWN and turn_of % 2 == 1 and not(is_ended_hx(board3, graph)):
                 a = lst_cord(event.pos)
+                print(a)
                 if a == None:
                     pass
                 elif not(a in done_spaces):
@@ -1642,20 +1698,17 @@ def hex_game(screen, board3):
                     done_spaces.append(a)
                     turn_of += 1
             elif turn_of % 2 == 0 and not(is_ended_hx(board3, graph)):
-
                 temp = board3.copy()
-                if turn_of == 0:
-                    board3 = first_move_hx(board3)
-                # elif turn_of in [2, 4]:
-                #     board4 = result_hx(board4, MAX_second(board4, graph))
-                else:
-                    board3 = result_hx(board3, minimax_hx(board3, graph))
+                board3 = result_hx(board3, minimax_hx(board3, graph))
                 d = change_in_states(temp, board3)
+                print(d)
                 done_spaces.append(d)
                 make_hex(turn_of % 2, d)
                 turn_of += 1
 
         pygame.display.update()
+
+# 4 buttons that are made for each game in the main screen
 
 
 def button(screen, position, text):
@@ -1680,8 +1733,6 @@ screen.fill(black)
 
 
 # main function for the screen
-
-
 def mainmenu():
     closed = False
     while not(closed):
