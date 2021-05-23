@@ -485,7 +485,7 @@ def deQueue(queue):
 
 
 def front(queue):
-    return queue[-1]
+    return queue[0]
 
 
 def is_empty(queue):
@@ -744,7 +744,8 @@ addEdges(game_tree_dm, edges, True)
 # Driver code for Domineering
 
 
-def domineering_screen(screen, grid):
+def domineering_screen(screen):
+    grid_t = [[0 for _ in range(4)] for __ in range(3)]
     blank()
     lines_dm()
     count = 0
@@ -752,8 +753,10 @@ def domineering_screen(screen, grid):
     used_space = []
     closed = False
     while not(closed):
-        a = player_determiner(grid)
-        if is_full(grid):
+        a = player_determiner(grid_t)
+        print(grid_t)
+        print(a)
+        if is_full(grid_t):
             winner = int()
             if a == 2:
                 winner = 1
@@ -766,9 +769,12 @@ def domineering_screen(screen, grid):
             textrect = text.get_rect()
             textrect.center = (320, 40)
 
-        else:
-            text = font.render('''Player ''' + str(a) +
-                               ''''s Turn''', True, (255, 255, 255))
+        elif a % 2 == 0:
+            text = font.render('''Demon's Turn''', True, (255, 255, 255))
+            textrect = text.get_rect()
+            textrect.center = (320, 40)
+        elif a % 2 == 1:
+            text = font.render('''Your Turn''', True, (255, 255, 255))
             textrect = text.get_rect()
             textrect.center = (320, 40)
         screen.blit(text, textrect)
@@ -783,18 +789,19 @@ def domineering_screen(screen, grid):
         for i in pygame.event.get():
             if i.type == pygame.QUIT:
                 return True
-            if i.type == pygame.MOUSEBUTTONDOWN and is_full(grid):
+            if i.type == pygame.MOUSEBUTTONDOWN and is_full(grid_t):
                 pass
             if i.type == pygame.MOUSEBUTTONDOWN:
                 if 20 <= i.pos[0] < 80 and 15 <= i.pos[1] <= 45:
                     blank()
+                    grid_t = [[0 for _ in range(4)] for __ in range(3)]
                     return False
-            if i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 0 and not(is_full(grid)):
+            if i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 0 and not(is_full(grid_t)):
                 coord_1 = list_coordinates_dm(i.pos)
                 if not(coord_1 in used_space):
                     count += 0.5
                     used_space.append(coord_1)
-            elif i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 1 and not(is_full(grid)):
+            elif i.type == pygame.MOUSEBUTTONDOWN and turn % 2 == 0 and int(count//0.5) % 2 == 1 and not(is_full(grid_t)):
                 coord_2 = list_coordinates_dm(i.pos)
                 if not(coord_2 in used_space):
                     if comes_after(coord_1, coord_2):
@@ -803,16 +810,16 @@ def domineering_screen(screen, grid):
                         coord_2 = temp
                     if is_adjacent(coord_1, coord_2):
                         used_space.append(coord_2)
-                        update_grid(grid, coord_1, coord_2, a)
+                        update_grid(grid_t, coord_1, coord_2, a)
                         make_rec(screen, a, coord_1, coord_2)
                         count += 0.5
                         turn += 1
 
-            elif turn % 2 == 1 and not(is_full(grid)):
-                x = bot(grid, player_determiner(grid), game_tree_dm)
-                coords = add_cods(grid, tuple_to_list(x))
+            elif turn % 2 == 1 and not(is_full(grid_t)):
+                x = bot(grid_t, player_determiner(grid_t), game_tree_dm)
+                coords = add_cods(grid_t, tuple_to_list(x))
                 used_space.extend(coords)
-                grid = tuple_to_list(x).copy()
+                grid_t = tuple_to_list(x).copy()
                 make_rec(screen, a, coords[0], coords[1])
                 turn += 1
         pygame.display.update()
@@ -1380,7 +1387,7 @@ def result_hx(state, move):
 def max_value_hx(state, connections):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = -float('inf')
+    v = -9999999
     for a in action_hx(state):
         v = max(v, min_value_hx(result_hx(state, a), connections))
     return v
@@ -1391,7 +1398,7 @@ def max_value_hx(state, connections):
 def min_value_hx(state, connections):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = float('inf')
+    v = 9999999
     for a in action_hx(state):
         v = min(v, max_value_hx(result_hx(state, a), connections))
     return v
@@ -1402,7 +1409,7 @@ def min_value_hx(state, connections):
 def max_pruning_hx(state, connections, beta):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = -float('inf')
+    v = -9999999
     for a in action_hx(state):
         check = min_pruning_hx(result_hx(state, a), connections, beta)
         if v < check:
@@ -1417,7 +1424,7 @@ def max_pruning_hx(state, connections, beta):
 def min_pruning_hx(state, connections, alpha):
     if is_ended_hx(state, connections) == True:
         return utility_hx(state, connections)
-    v = float('inf')
+    v = 9999999
     for a in action_hx(state):
         check = max_pruning_hx(result_hx(state, a), connections, alpha)
         if v > check:
@@ -1430,7 +1437,7 @@ def min_pruning_hx(state, connections, alpha):
 
 
 def MAX_hx(state, connections):
-    val = -float('inf')
+    val = -9999999
     moves = action_hx(state)
     for a in moves:
         if a == moves[0]:
@@ -1449,7 +1456,7 @@ def MAX_hx(state, connections):
 
 
 def MIN_hx(state, connections):
-    val = float('inf')
+    val = 9999999
     moves = action_hx(state)
     for a in moves:
         if a == moves[0]:
@@ -1474,21 +1481,6 @@ def minimax_hx(state, connections):
         return MAX_hx(state, connections)
 
 # first move the bot should
-
-
-def first_move_hx(state):
-    turn = check_turn_hx(state)
-    if turn == "X":
-        state = result_hx(state, (0, 0))
-    else:
-        for i in range(len(state)):
-            for j in range(len(state[i])):
-                if state[i][j] == "X":
-                    if i != len(state)-1:
-                        state = result_hx(state, (i+1, j))
-                    else:
-                        state = result_hx(state, (i-1, j))
-    return state
 
 
 # board for hex (nested list version)
@@ -1571,14 +1563,6 @@ for i in range(3):
     x += 90
 hex_vertices.append(row1.copy())
 
-# row1 = []
-# x = 0
-# for i in range(4):
-#     hex1 = [(180+h+1+x, 150+h+h+l+h+h+l+l), (225+h+x, 151+h+h+l+h+l+l), (270+h-1+x, 150+h+h+l+l+h+h+l),
-#             (270+h-1+x, 150+h+h+l+h+l+l+h+l), (225+h+x, 150+h+h+l+h+l+l+h-1+h+l), (180+h+1+x, 150+h+h+l+h+l+l+h+l)]
-#     row1.append(hex1.copy())
-#     x += 90
-# hex_vertices.append(row1.copy())
 
 # converts the coordinates of click position into the corresponding coordinates of the board represented as nnested lists
 
@@ -1638,7 +1622,6 @@ def hex_game(screen, board3):
     while not(exited):
         b = pygame.Rect(0, 0, 640, 97.5)
         pygame.draw.rect(screen, black, b)
-        print(board3)
         if is_ended_hx(board3, graph):
             if utility_hx(board3, graph) == 1:
                 text = font.render("Demon Won!", True, white)
@@ -1690,17 +1673,13 @@ def hex_game(screen, board3):
                     pass
                 elif not(a in done_spaces):
                     board3 = result_hx(board3, a)
-                    print(a)
                     make_hex(turn_of % 2, a)
                     done_spaces.append(a)
                     turn_of += 1
             elif turn_of % 2 == 0 and not(is_ended_hx(board3, graph)):
-
                 temp = board3.copy()
-
                 board3 = result_hx(board3, minimax_hx(board3, graph))
                 d = change_in_states(temp, board3)
-                print(d)
                 done_spaces.append(d)
                 make_hex(turn_of % 2, d)
                 turn_of += 1
@@ -1760,8 +1739,7 @@ def mainmenu():
                 if ttt.collidepoint(pygame.mouse.get_pos()):
                     closed = tic_tac_toe(screen, board_ttt)
                 elif domineering.collidepoint(pygame.mouse.get_pos()):
-                    a = domineering_screen(screen, grid_dm)
-                    closed = a
+                    closed = domineering_screen(screen)
                 elif pick_the_brick.collidepoint(pygame.mouse.get_pos()):
                     closed = menu_pb(board)
                 elif hex.collidepoint(pygame.mouse.get_pos()):
