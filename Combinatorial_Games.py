@@ -357,7 +357,6 @@ def tic_tac_toe(screen, board_ttt):
     done_spaces = []
     while not(exited):
         a = check_turn_ttt(board_ttt)
-        print(a)
         b = pygame.Rect(0, 0, 640, 97.5)
         pygame.draw.rect(screen, black, b)
         pygame.draw.line(screen, white, (20, 45), (80, 45), 1)
@@ -398,9 +397,6 @@ def tic_tac_toe(screen, board_ttt):
             if is_ended_ttt(board_ttt):
                 pass
             if event.type == pygame.MOUSEBUTTONDOWN and not(is_ended_ttt(board_ttt)) and turn % 2 == 0:
-                if 20 <= event.pos[0] < 80 and 15 <= event.pos[1] <= 45:
-                    blank()
-                    return False
                 if not(list_coordinates_ttt(event.pos[0], event.pos[1]) in done_spaces):
                     X = event.pos[0]
                     Y = event.pos[1]
@@ -954,7 +950,7 @@ def menu_pb(state):
             if is_ended_pb(state):
                 pass
             # checks if the mouse has been clicked
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 # checks if 1 block has to be picked or 2 according to the move.
                 # Makes the bot unravel its algorithm, and make the move accordingly.
                 # To be updated with the bot, changes to be made as the bot will not click the mouse
@@ -981,6 +977,15 @@ def menu_pb(state):
                         header_textRect = header_text.get_rect()
                         header_textRect.center = (320, 85)
                         screen.blit(header_text, header_textRect)
+                        pygame.draw.line(screen, white, (20, 45), (80, 45), 1)
+                        pygame.draw.line(screen, white, (20, 15), (80, 15), 1)
+                        pygame.draw.line(screen, white, (20, 15), (20, 45), 1)
+                        pygame.draw.line(screen, white, (80, 15), (80, 45), 1)
+                        text = small_font.render(
+                            '''Home''', True, (255, 255, 255))
+                        textrect = text.get_rect()
+                        textrect.center = (50, 30)
+                        screen.blit(text, textrect)
 
                 elif b2.collidepoint(pygame.mouse.get_pos()):
                     pygame.draw.circle(screen, black, (x, y), 20)
@@ -1006,11 +1011,21 @@ def menu_pb(state):
                         header_textRect = header_text.get_rect()
                         header_textRect.center = (320, 85)
                         screen.blit(header_text, header_textRect)
+                        pygame.draw.line(screen, white, (20, 45), (80, 45), 1)
+                        pygame.draw.line(screen, white, (20, 15), (80, 15), 1)
+                        pygame.draw.line(screen, white, (20, 15), (20, 45), 1)
+                        pygame.draw.line(screen, white, (80, 15), (80, 45), 1)
+                        text = small_font.render(
+                            '''Home''', True, (255, 255, 255))
+                        textrect = text.get_rect()
+                        textrect.center = (50, 30)
+                        screen.blit(text, textrect)
 
                 pygame.display.update()
                 if is_ended_pb(state) == True:
                     break
                 time.sleep(1)
+
                 move = minimax_pb(state)
                 state = result_pb(state, move)
                 if move[0] == 1:
@@ -1491,37 +1506,39 @@ addEdges(graph, make_edges(board3))
 l = 51.96152423
 h = 25.98076211
 
-# creats the grid for hex
+# creates the grid for hex
 
 
 def lines_hx():
-    x = 45
+    x = 200
     for i in range(4):
         a = 0
         b = 0
         c = 0
         for j in range(4):
             if i <= 2:
-                pygame.draw.line(screen, white, (x+a+h, 150+h+b+c),
-                                 (x+45+h+a, 150+c+b))
-                if j != 3 or i != 2:
-                    pygame.draw.line(
-                        screen, white, (x+45+h+a, 150+c+b), (x+90+h+a, 150+h+b+c))
+                pygame.draw.line(
+                    screen, white, (x+45+h-a, 150+c+b), (x+90+h-a, 150+h+b+c))
+                if j != 3 or i != 0:
+                    pygame.draw.line(screen, white, (x-a+h, 150+h+b+c),
+                                     (x+45+h-a, 150+c+b))
+
             if j == 3:
                 continue
-            pygame.draw.line(screen, white, (x+h+a, 150+c+b+h),
-                             (x+h+a, 150+c+b+l+h))
+            pygame.draw.line(screen, white, (x+h-a, 150+c+b+h),
+                             (x+h-a, 150+c+b+l+h))
             a += 45
             b += l
             c += h
         x += 90
-    x = 45
+        # break
+    x = 200
     a = 0
     b = 0
     c = 0
     for i in range(3):
-        pygame.draw.line(screen, white, (x+h+a, 150+c+b+h+l),
-                         (x+45+h+a, 150+c+b+h+l+h))
+        pygame.draw.line(screen, white, (x+225+h-a, 150+h+l+h+c+b),
+                         (x+270+h-a, 150+h+l+b+c))
         a += 45
         b += l
         c += h
@@ -1532,77 +1549,60 @@ hex_vertices = list()
 row1 = []
 x = 0
 for i in range(3):
-    hex1 = [(45+h+1+x, 150+h), (90+h+x, 151), (135+h-1+x, 150+h),
-            (135+h-1+x, 150+h+l), (90+h+x, 150+h+l+h-1), (45+h+1+x, 150+h+l)]
+    hex1 = [(200+h+1+x, 150+h), (245+h+x, 151), (290+h-1+x, 150+h),
+            (290+h-1+x, 150+h+l), (245+h+x, 150+h+l+h-1), (200+h+1+x, 150+h+l)]
     row1.append(hex1.copy())
     x += 90
-temp = row1[0]
-row1[0] = row1[2]
-row1[2] = temp
 hex_vertices.append(row1.copy())
 row1 = []
 x = 0
 for i in range(3):
-    hex1 = [(90+h+1+x, 150+h+h+l), (135+h+x, 151+h+l), (180+h-1+x, 150+h+h+l),
-            (180+h-1+x, 150+h+l+h+l), (135+h+x, 150+h+l+h-1+h+l), (90+h+1+x, 150+h+l+h+l)]
+    hex1 = [(155+h+1+x, 150+h+h+l), (200+h+x, 151+h+l), (245+h-1+x, 150+h+h+l),
+            (245+h-1+x, 150+h+l+h+l), (200+h+x, 150+h+l+h-1+h+l), (155+h+1+x, 150+h+l+h+l)]
     row1.append(hex1.copy())
     x += 90
-temp = row1[0]
-row1[0] = row1[2]
-row1[2] = temp
 hex_vertices.append(row1.copy())
 row1 = []
 x = 0
 for i in range(3):
-    hex1 = [(135+h+1+x, 150+h+h+h+l+l), (180+h+x, 151+h+h+l+l), (225+h-1+x, 150+h+l+h+h+l),
-            (225+h-1+x, 150+h+h+l+l+h+l), (180+h+x, 150+h+h+l+l+h-1+h+l), (135+h+1+x, 150+h+h+l+l+h+l)]
+    hex1 = [(110+h+1+x, 150+h+h+h+l+l), (155+h+x, 151+h+h+l+l), (200+h-1+x, 150+h+l+h+h+l),
+            (200+h-1+x, 150+h+h+l+l+h+l), (155+h+x, 150+h+h+l+l+h-1+h+l), (110+h+1+x, 150+h+h+l+l+h+l)]
     row1.append(hex1.copy())
     x += 90
-temp = row1[0]
-row1[0] = row1[2]
-row1[2] = temp
 hex_vertices.append(row1.copy())
 
+# row1 = []
+# x = 0
+# for i in range(4):
+#     hex1 = [(180+h+1+x, 150+h+h+l+h+h+l+l), (225+h+x, 151+h+h+l+h+l+l), (270+h-1+x, 150+h+h+l+l+h+h+l),
+#             (270+h-1+x, 150+h+h+l+h+l+l+h+l), (225+h+x, 150+h+h+l+h+l+l+h-1+h+l), (180+h+1+x, 150+h+h+l+h+l+l+h+l)]
+#     row1.append(hex1.copy())
+#     x += 90
+# hex_vertices.append(row1.copy())
 
 # converts the coordinates of click position into the corresponding coordinates of the board represented as nnested lists
 
 
 def lst_cord(coord):
     x1 = 0
-    for i in range(3):
-        if 45+h+x1 <= coord[0] <= 135+h+x1 and 150+h <= coord[1] <= 150+h+l:
-            if i == 0:
-                return (0, i+2)
-            elif i == 2:
-                return (0, i-2)
+    for i in range(4):
+        if 200+h+x1 <= coord[0] <= 290+h+x1 and 150+h <= coord[1] <= 150+h+l:
             return (0, i)
         x1 += 90
     x1 = 0
-    for i in range(3):
-        if 90+h+x1 <= coord[0] <= 180+h+x1 and 150+h+h+l <= coord[1] <= 150+h+h+l+l:
-            if i == 0:
-                return (1, i+2)
-            elif i == 2:
-                return (1, i-2)
+    for i in range(4):
+        if 155+h+x1 <= coord[0] <= 245+h+x1 and 150+h+h+l <= coord[1] <= 150+h+h+l+l:
             return (1, i)
         x1 += 90
     x1 = 0
-    for i in range(3):
-        if 135+h+x1 <= coord[0] <= 225+h+x1 and 150+(3*h)+(2*l) <= coord[1] <= 150+(3*h)+(3*l):
-            if i == 0:
-                return (2, i+2)
-            elif i == 2:
-                return (2, i-2)
+    for i in range(4):
+        if 110+h+x1 <= coord[0] <= 200+h+x1 and 150+(3*h)+(2*l) <= coord[1] <= 150+(3*h)+(3*l):
             return (2, i)
         x1 += 90
     x1 = 0
-    for i in range(3):
+    for i in range(4):
         if 180+h+x1 <= coord[0] <= 270+h+x1 and 150+4*h+3*l <= coord[1] <= 150+4*h+4*l:
-            if i == 0:
-                return (2, i+2)
-            elif i == 2:
-                return (2, i-2)
-            return (2, i)
+            return (3, i)
         x1 += 90
 
 # makes a hexagon
@@ -1638,9 +1638,7 @@ def hex_game(screen, board3):
     while not(exited):
         b = pygame.Rect(0, 0, 640, 97.5)
         pygame.draw.rect(screen, black, b)
-        print(is_ended_hx(board3, graph))
-        for i in board3:
-            print(i)
+        print(board3)
         if is_ended_hx(board3, graph):
             if utility_hx(board3, graph) == 1:
                 text = font.render("Demon Won!", True, white)
@@ -1671,7 +1669,6 @@ def hex_game(screen, board3):
         screen.blit(text, textrect)
         for event in pygame.event.get():
             if is_ended_hx(board3, graph):
-                print(utility_hx(board3, graph))
                 if utility_hx(board3, graph) == 1:
                     text = font.render("Demon Won!", True, white)
                     textrect = text.get_rect()
@@ -1689,16 +1686,18 @@ def hex_game(screen, board3):
                     return False
             if event.type == pygame.MOUSEBUTTONDOWN and turn_of % 2 == 1 and not(is_ended_hx(board3, graph)):
                 a = lst_cord(event.pos)
-                print(a)
                 if a == None:
                     pass
                 elif not(a in done_spaces):
                     board3 = result_hx(board3, a)
+                    print(a)
                     make_hex(turn_of % 2, a)
                     done_spaces.append(a)
                     turn_of += 1
             elif turn_of % 2 == 0 and not(is_ended_hx(board3, graph)):
+
                 temp = board3.copy()
+
                 board3 = result_hx(board3, minimax_hx(board3, graph))
                 d = change_in_states(temp, board3)
                 print(d)
@@ -1733,6 +1732,8 @@ screen.fill(black)
 
 
 # main function for the screen
+
+
 def mainmenu():
     closed = False
     while not(closed):
@@ -1755,6 +1756,7 @@ def mainmenu():
 
             # checks if the mouse has been clicked
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 if ttt.collidepoint(pygame.mouse.get_pos()):
                     closed = tic_tac_toe(screen, board_ttt)
                 elif domineering.collidepoint(pygame.mouse.get_pos()):
