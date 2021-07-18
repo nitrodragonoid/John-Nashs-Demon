@@ -135,14 +135,9 @@ def check_turn_ttt(state):
     Os = 0
     for i in range(len(state)):
         for j in range(len(state[i])):
-            if state[i][j] == "X":
-                Xs += 1
-            elif state[i][j] == "O":
-                Os += 1
-    if Xs != Os:
-        return "O"
-    else:
-        return "X"
+            Xs += state[i][j] == "X"
+            Os += state[i][j] == "O"
+    return "O" * ( Xs != Os ) + "X" * (Xs == Os)
 
 # Draws a line where a player ends up in winning a match
 
@@ -303,18 +298,8 @@ def lines_ttt():
 def list_coordinates_ttt(a, b):
     x = float('inf')
     y = float('inf')
-    if a in range(95, 246):
-        y = 0
-    elif a in range(246, 396):
-        y = 1
-    elif a in range(396, 546):
-        y = 2
-    if b in range(100, 251):
-        x = 0
-    elif b in range(251, 401):
-        x = 1
-    elif b in range(401, 551):
-        x = 2
+    x = (b in range(251, 401)) + 2 * (b in range(401, 551))
+    y = (a in range(246, 396)) + 2 * (a in range(396, 546))
     return (x, y)
 
 # Draws X
@@ -508,12 +493,9 @@ def player_determiner(grid):
     count = 0
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if grid[i][j] != 0:
-                count += 1
+            count += grid[i][j] != 0
     count = count//2
-    if count % 2 == 1:
-        return 2
-    return 1
+    return 2 * (count % 2 == 1) + (count % 2 == 0)
 
 # Determines whether the grid is fully filled or not
 
@@ -584,8 +566,7 @@ def dfs(graph, current_state, comp_no, visited, parent):
             parent[i[0]] = current_state
             if len(graph[i[0]]) == 0 and player_determiner(current_state) != comp_no:
                 return
-            else:
-                dfs(graph, i[0], comp_no, visited, parent)
+            dfs(graph, i[0], comp_no, visited, parent)
 
 # Bot that works using dfs
 
@@ -615,10 +596,9 @@ def bot(grid, p_no, graph):
     sequence.append(temp)
     if cd:
         return sequence[-2]
-    else:
-        for i in sequence:
-            if i != temp:
-                return i
+    for i in sequence:
+        if i != temp:
+            return i
 
 # tuple form of grid to list converter
 
@@ -635,20 +615,8 @@ def tuple_to_list(grid):
 def list_coordinates_dm(cod):
     x = float('inf')
     y = float('inf')
-    if cod[0] in range(20, 171):
-        y = 0
-    elif cod[0] in range(171, 321):
-        y = 1
-    elif cod[0] in range(321, 471):
-        y = 2
-    elif cod[0] in range(471, 621):
-        y = 3
-    if cod[1] in range(100, 251):
-        x = 0
-    elif cod[1] in range(251, 401):
-        x = 1
-    elif cod[1] in range(401, 551):
-        x = 2
+    x = (cod[1] in range(251, 401)) + 2 * (cod[1] in range(401, 551))
+    y = (cod[0] in range(171, 321)) + 2 * (cod[0] in range(321, 471)) + 3 * (cod[0] in range(471, 621))
     return (x, y)
 
 # checks if the two click oints corresponds to adjacent boxes or not
@@ -755,11 +723,7 @@ def domineering_screen(screen):
     while not(closed):
         a = player_determiner(grid_t)
         if is_full(grid_t):
-            winner = int()
-            if a == 2:
-                winner = 1
-            else:
-                winner = 2
+            winner = (a==2) + 2*(a!=2)
             b = pygame.Rect(0, 0, 640, 97.5)
             pygame.draw.rect(screen, black, b)
             text = font.render('''Player ''' + str(winner) +
@@ -1089,10 +1053,7 @@ board = [bricks, turn]
 
 
 def is_ended_pb(state):
-    if state[0] > 0:
-        return False
-    else:
-        return True
+    return bool(state[0] <= 0)
 
 # assigns a utility to a ended game board
 
@@ -1329,18 +1290,13 @@ def check_player_2_hx(state, G):
 
 
 def is_ended_hx(state, connections):
-    if (check_player_1_hx(state, connections) == True) or (check_player_2_hx(state, connections) == True):
-        return True
-    return False
+    return (check_player_1_hx(state, connections) == True) or (check_player_2_hx(state, connections) == True)
 
 # assigns a utility to a ended game board
 
 
 def utility_hx(state, connections):
-    if check_player_1_hx(state, connections) == True:
-        return 1
-    if check_player_2_hx(state, connections) == True:
-        return -1
+    return (check_player_1_hx(state, connections) == True) - (check_player_2_hx(state, connections) == True)
 
 # returns all possible moves that can bbe made from a state
 
@@ -1361,14 +1317,9 @@ def check_turn_hx(state):
     Os = 0
     for i in range(len(state)):
         for j in range(len(state[i])):
-            if state[i][j] == "X":
-                Xs += 1
-            elif state[i][j] == "O":
-                Os += 1
-    if Xs != Os:
-        return "O"
-    else:
-        return "X"
+            Xs += state[i][j] == "X"
+            Os += state[i][j] == "O"
+    return "O" * (Xs != Os) + "X" * (Xs == Os)
 
 # combines the move made with the state i.e. updates the state
 
@@ -1612,8 +1563,6 @@ def change_in_states(initial, final):
 def hex_game(screen, board3):
     blank()
     lines_hx()
-    turn = 0
-    player = 1
     exited = False
     done_spaces = []
     turn_of = 0
